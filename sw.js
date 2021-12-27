@@ -10,11 +10,11 @@ const urlsToCache = [
 ];
 
 self.addEventListener('install', (event) => {
-    console.log('サービスワーカー : Installイベント');
+    logger('サービスワーカー : Installイベント');
     event.waitUntil(
         caches.open(CACHE_NAME)
         .then((cache) => {
-            console.log('必要なデータをキャッシュしました');
+            logger('必要なデータをキャッシュしました');
             return cache.addAll(urlsToCache);
         })
     );
@@ -24,11 +24,11 @@ self.addEventListener('fetch', (e) => {
     e.respondWith(
         caches.match(e.request)
         .then((r) => {
-            console.log('次のリソースファイルをフェッチ : ' + e.request.url);
+            logger('次のリソースファイルをフェッチ : ' + e.request.url);
             return r || fetch(e.request)
             .then((response) => {
                 return caches.open(CACHE_NAME).then((cache) => {
-                    console.log('次のリソースファイルをキャッシュ : ' + e.request.url);
+                    logger('次のリソースファイルをキャッシュ : ' + e.request.url);
                     cache.put(e.request, response.clone());
                     return response;
                 });
